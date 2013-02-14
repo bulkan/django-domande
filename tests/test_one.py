@@ -7,4 +7,3 @@ class DomandeTests(TestCase):
         ''' lol'''
 
         self.assertTrue(1 > 0)
-
