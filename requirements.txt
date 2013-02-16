@@ -2,3 +2,4 @@ django
 nose
 coverage
 yolk
+South
