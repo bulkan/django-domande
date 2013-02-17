@@ -14,3 +14,12 @@ Creating migrations;
     django-admin.py schemamigration --settings=domande.settings --pythonpath=$PWD
 
 * Make sure that settings file contains entries for DATABASES and INSTALLED_APPS contains ```domande``` and ```South```
+
+Notes
+=====
+
+Can't use Django ORM aggregation when you use a GenericForeignKey and a GenericRelation
+
+User should create a ManyToManyField on their model that needs questions
+
+
