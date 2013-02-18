@@ -19,6 +19,9 @@ class BaseQuestion(TimeStampedModel):
     text = models.TextField(blank=False,
         help_text='The question text')
 
+    def __unicode__(self):
+        return self.text
+
 
 class TextQuestion(BaseQuestion):
     pass
@@ -42,7 +45,7 @@ class ChoiceQuestion(BaseQuestion):
     multichoice = models.BooleanField(default=False,
             help_text="Select one or more")
 
-    choices = models.ForeignKey(Choice)
+    choices = models.ManyToManyField(Choice)
 
 
 class BaseAnswer(TimeStampedModel):
@@ -56,10 +59,16 @@ class TextAnswer(BaseAnswer):
     answer = models.TextField(blank=False,
         help_text = 'The answer text')
 
+    def __unicode__(self):
+        return self.question
+
 
 class ChoiceAnswer(BaseAnswer):
     question =  models.ForeignKey(TextQuestion)
 
-    answer = models.ForeignKey(Choice,
+    answer = models.ManyToManyField(Choice,
         help_text='The selected choices as the answer')
+
+    def __unicode__(self):
+        return self.answer
 
