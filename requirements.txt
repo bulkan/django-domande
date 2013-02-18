@@ -5,3 +5,4 @@ yolk
 South
 django-extensions
 django-nose
+django-crispy-forms
