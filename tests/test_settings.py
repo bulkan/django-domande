@@ -13,10 +13,12 @@ DATABASES = {
 }
 
 INSTALLED_APPS = [
-    'domande',
+    'django.contrib.contenttypes',
     'django_extensions',
-    'south',
     'crispy_forms',
+    'south',
+    'tests', # need to add this so my dummy models are created
+    'domande',
     'django_nose',
 ]
 
