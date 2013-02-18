@@ -17,34 +17,28 @@ from models import DummyModel
 
 class DomandeModelTests(TestCase):
 
-    def test_questions(self):
-        ''' Create a bunch of questions'''
+    def test_text_questions(self):
+        ''' Create a bunch of text questions'''
 
+        dummy = DummyModel.objects.create(name='dumb dumb')
 
-        dummy = DummyModel(name='dumb dumb')
-        dummy.save()
-        dummy_model_type = ContentType.objects.get_for_model(dummy)
+        question_texts = [
+            'How much wood can a woodchuck chuck?',
+            'What is the meaning of life'
+        ]
 
-        t = TextQuestion.objects.create(order=1,
-            text='How much wood can a woodchuck chuck?')
-        t.save()
+        tgt = ContentType.objects.get_for_model(TextQuestion)
 
-        tgt=ContentType.objects.get_for_model(t)
+        for i, text in enumerate(question_texts):
+            t = TextQuestion.objects.create(order=i,
+                text=text)
 
-        q = Question.objects.create(content_type=tgt,
-            object_id=t.id)
-        q.save()
+            # Create Question objects of with the content_type of
+            # TextQuestion
+            q = Question.objects.create(content_type=tgt, object_id=t.id)
+            dummy.questions.add(q)
 
-        dummy.questions.add(q)
-
-        t = TextQuestion.objects.create(order=2,
-            text='What is the meaning of life')
-        t.save()
-
-        q = Question.objects.create(content_type=tgt,
-            object_id=t.id)
-        q.save()
-        dummy.questions.add(q)
+        sorted([question.content_object.text for question in dummy.questions.all()])
 
         questions = dummy.questions.all()
         nt.eq_(questions.count(), 2)
@@ -79,7 +73,6 @@ class DemoCompQuestion(TestCase):
 
         q = Question.objects.create(content_type=ctype,
             object_id=choice_question.id)
-        #q.save()
         dummy.questions.add(q)
 
         choice_question.choices = choices
