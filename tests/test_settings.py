@@ -16,7 +16,8 @@ INSTALLED_APPS = [
     'domande',
     'django_extensions',
     'south',
-    'django_nose'
+    'crispy_forms',
+    'django_nose',
 ]
 
 SOUTH_TESTS_MIGRATE = False
