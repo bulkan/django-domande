@@ -8,7 +8,7 @@ class DummyModel(models.Model):
     ''' model used for testing '''
 
     name = models.CharField(max_length=256)
-    questions = generic.GenericRelation(Question)
+    questions = models.ManyToManyField(Question)
 
     def __unicode__(self):
         return self.name
