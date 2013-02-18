@@ -7,4 +7,6 @@ python:
 install: 
   - "pip install -r requirements.txt --use-mirrors"
 
-script: nosetests --with-coverage --cover-package=domande
+script:
+    - django-admin.py test --settings='tests.test_settings' --pythonpath=$PWD --with-coverage --cover-package=domande
+

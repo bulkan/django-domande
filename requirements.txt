@@ -4,3 +4,4 @@ coverage
 yolk
 South
 django-extensions
+django-nose
