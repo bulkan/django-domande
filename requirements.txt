@@ -3,3 +3,4 @@ nose
 coverage
 yolk
 South
+django-extensions
