@@ -16,6 +16,9 @@ INSTALLED_APPS = [
     'domande',
     'django_extensions',
     'south',
+    'django_nose'
 ]
 
 SOUTH_TESTS_MIGRATE = False
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
