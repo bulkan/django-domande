@@ -117,7 +117,7 @@ class TestAnswerModels(TestCase):
         choices = [Choice.objects.create(label=t) for t in ('42', '43')]
 
         choice_question = ChoiceQuestion.objects.create(
-            text='What is the meaning of life?',
-            content_object=self.member,
-            choices=choices
+            text='What is the meaning of life?'
         )
+
+        choice_question.choices = choices
