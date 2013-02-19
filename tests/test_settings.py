@@ -24,4 +24,12 @@ INSTALLED_APPS = [
 
 SOUTH_TESTS_MIGRATE = False
 
+NOSE_ARGS = ['--with-fixture-bundling',
+             '-s',
+             '--with-cover',
+             '--with-xunit',
+             '--cover-package=domande',
+             '--with-fixture-bundling'
+]
+
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
