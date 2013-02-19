@@ -26,10 +26,6 @@ class DomandeModelTests(TestCase):
         for i, text in enumerate(question_texts):
             t = TextQuestion.objects.create(order=i,
                 text=text)
-
-            # Create Question objects of with the content_type of
-            # TextQuestion
-            #q = Question.objects.create(content_type=tgt, object_id=t.id)
             dummy.questions.add(t)
 
         sorted([question.text for question in dummy.questions.all()])
