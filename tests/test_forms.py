@@ -3,9 +3,14 @@ from django.template.loader import get_template_from_string
 from django.template import Context, TemplateSyntaxError
 
 from django.test import TestCase
+from django.test.client import RequestFactory
+
 from nose import tools as nt
 
 from domande.forms import TextQuestionForm
+
+
+request_factory = RequestFactory()
 
 
 def test_question_form():
@@ -20,7 +25,13 @@ def test_question_form():
 
     c = Context({'form': form})
     html = template.render(c)
-    print html
+    nt.eq_('order' not in html, True)
 
 
-
+def test_answer():
+    request = request_factory.post(
+        path = '/',
+        data = {
+         'answer': 'testing'
+        }
+    )

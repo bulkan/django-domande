@@ -1,20 +1,23 @@
 from django.db import models
 from django.db import IntegrityError
 
+from django.contrib.contenttypes.models import ContentType
+
 from django.test import TestCase
 
 from nose import tools as nt
 
 from domande.models import TextQuestion, ChoiceQuestion, Choice
+from domande.models import TextAnswer
 from domande.models import Question
 
-from models import DummyModel
+from models import DummyModel, DummyMember
 
 
 class DomandeModelTests(TestCase):
 
     def test_text_questions(self):
-        ''' Create a bunch of text questions'''
+        '''Create a bunch of text questions'''
 
         dummy = DummyModel.objects.create(name='dumb dumb')
 
@@ -70,4 +73,51 @@ class DemoCompQuestion(TestCase):
 
         dummy.questions.add(text_question)
 
+        # we created two questions so we should get 2 back
         nt.eq_(dummy.questions.all().count(), 2)
+
+
+class TestAnswerModels(TestCase):
+
+    def setUp(self):
+        # create a dummy member
+        self.member = DummyMember.objects.create(name="Tester")
+        self.ctype = ContentType.objects.get_for_model(self.member)
+
+    def test_text_answer(self):
+        '''
+        Test that the reverse GenericRelation works
+        '''
+
+        text_question = TextQuestion.objects.create(order=1,
+            text='How much wood can a woodchuck chuck?')
+
+        for i in range(2):
+            # answer belongs to member
+            answer = TextAnswer.objects.create(
+                question=text_question,
+                answer="4%d woods" %i,
+                content_object=self.member,
+            )
+
+        nt.eq_(self.member.answers.count(), 2)
+
+        # Test that we can get the answer object
+        nt.eq_(self.member.answers.all()[1], answer)
+
+        # Test the we can get the question from answer
+        nt.eq_(self.member.answers.all()[1].question, text_question)
+
+
+    def test_choice_answer(self):
+        '''
+        Test Choice answers
+        '''
+
+        choices = [Choice.objects.create(label=t) for t in ('42', '43')]
+
+        choice_question = ChoiceQuestion.objects.create(
+            text='What is the meaning of life?',
+            content_object=self.member,
+            choices=choices
+        )

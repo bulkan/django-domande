@@ -1,5 +1,9 @@
 from django.db import models
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
+
 from polymorphic import PolymorphicModel
 
 from django_extensions.db.models import TimeStampedModel
@@ -7,6 +11,7 @@ from django_extensions.db.models import TimeStampedModel
 
 class Question(PolymorphicModel, TimeStampedModel):
     ''' represents a question '''
+
     class Meta:
         ordering = ['order']
 
@@ -48,24 +53,26 @@ class ChoiceQuestion(Question):
     choices = models.ManyToManyField(Choice)
 
 
-class BaseAnswer(TimeStampedModel):
-    class Meta:
-        abstract = True
+class Answer(PolymorphicModel, TimeStampedModel):
+    question = models.ForeignKey(Question)
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    def __unicode__(self):
+        return "Q: %s - A: " % (self.question)
 
 
-class TextAnswer(BaseAnswer):
-    question =  models.ForeignKey(TextQuestion)
-
+class TextAnswer(Answer):
     answer = models.TextField(blank=False,
         help_text = 'The answer text')
 
     def __unicode__(self):
-        return self.question
+        return self.answer
 
 
-class ChoiceAnswer(BaseAnswer):
-    question =  models.ForeignKey(TextQuestion)
-
+class ChoiceAnswer(Answer):
     answer = models.ManyToManyField(Choice,
         help_text='The selected choices as the answer')
 
