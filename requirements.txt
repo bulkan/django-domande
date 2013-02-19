@@ -6,3 +6,4 @@ South
 django-extensions
 django-nose
 django-crispy-forms
+django-polymorphic

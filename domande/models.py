@@ -1,24 +1,13 @@
 from django.db import models
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from polymorphic import PolymorphicModel
 
 from django_extensions.db.models import TimeStampedModel
 
 
-class Question(TimeStampedModel):
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-
-    def __unicode__(self):
-        return '%s: %d' % (self.content_type, self.object_id)
-
-
-class BaseQuestion(TimeStampedModel):
+class Question(PolymorphicModel, TimeStampedModel):
     ''' represents a question '''
     class Meta:
-        abstract = True
         ordering = ['order']
 
     order = models.PositiveIntegerField(default=1,
@@ -34,7 +23,7 @@ class BaseQuestion(TimeStampedModel):
         return self.text
 
 
-class TextQuestion(BaseQuestion):
+class TextQuestion(Question):
     pass
 
 
@@ -52,7 +41,7 @@ class Choice(TimeStampedModel):
         return self.label
 
 
-class ChoiceQuestion(BaseQuestion):
+class ChoiceQuestion(Question):
     multichoice = models.BooleanField(default=False,
             help_text="Select one or more")
 

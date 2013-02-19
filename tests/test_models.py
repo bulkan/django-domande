@@ -1,11 +1,7 @@
 from django.db import models
 from django.db import IntegrityError
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
-
 from django.test import TestCase
-
 
 from nose import tools as nt
 
@@ -27,18 +23,16 @@ class DomandeModelTests(TestCase):
             'What is the meaning of life'
         ]
 
-        tgt = ContentType.objects.get_for_model(TextQuestion)
-
         for i, text in enumerate(question_texts):
             t = TextQuestion.objects.create(order=i,
                 text=text)
 
             # Create Question objects of with the content_type of
             # TextQuestion
-            q = Question.objects.create(content_type=tgt, object_id=t.id)
-            dummy.questions.add(q)
+            #q = Question.objects.create(content_type=tgt, object_id=t.id)
+            dummy.questions.add(t)
 
-        sorted([question.content_object.text for question in dummy.questions.all()])
+        sorted([question.text for question in dummy.questions.all()])
 
         questions = dummy.questions.all()
         nt.eq_(questions.count(), 2)
@@ -60,8 +54,7 @@ class DemoCompQuestion(TestCase):
             'All of the above!'
         ]
 
-        dummy = DummyModel(name="dumber")
-        dummy.save()
+        dummy = DummyModel.objects.create(name="dumber")
 
         choices = [Choice.objects.create(order=i, label=label)\
                     for i, label in enumerate(choice_label_text)]
@@ -69,11 +62,7 @@ class DemoCompQuestion(TestCase):
         choice_question = ChoiceQuestion.objects.create(multichoice=True,
             text="Why do we love safcol tuna?")
 
-        ctype = ContentType.objects.get_for_model(ChoiceQuestion)
-
-        q = Question.objects.create(content_type=ctype,
-            object_id=choice_question.id)
-        dummy.questions.add(q)
+        dummy.questions.add(choice_question)
 
         choice_question.choices = choices
         choice = choice_question.choices.filter(label__icontains='protein')
@@ -83,9 +72,6 @@ class DemoCompQuestion(TestCase):
         text_question = TextQuestion.objects.create(order=1,
             text='How much wood can a woodchuck chuck?')
 
-        ctype = ContentType.objects.get_for_model(TextQuestion)
-        q = Question.objects.create(content_type=ctype,
-            object_id=text_question.id)
-        dummy.questions.add(q)
+        dummy.questions.add(text_question)
 
         nt.eq_(dummy.questions.all().count(), 2)
