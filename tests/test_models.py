@@ -11,15 +11,15 @@ from domande.models import TextQuestion, ChoiceQuestion, Choice
 from domande.models import TextAnswer, ChoiceAnswer
 from domande.models import Question
 
-from models import DummyModel, DummyMember
+from .models import DummyModel, DummyMember
+
+from .utils import BaseTest
 
 
-class DomandeModelTests(TestCase):
+class DomandeModelTests(BaseTest):
 
     def test_text_questions(self):
         '''Create a bunch of text questions'''
-
-        dummy = DummyModel.objects.create(name='dumb dumb')
 
         question_texts = [
             'How much wood can a woodchuck chuck?',
@@ -29,15 +29,15 @@ class DomandeModelTests(TestCase):
         for i, text in enumerate(question_texts):
             t = TextQuestion.objects.create(order=i,
                 text=text)
-            dummy.questions.add(t)
+            self.dummy.questions.add(t)
 
-        sorted([question.text for question in dummy.questions.all()])
+        sorted([question.text for question in self.dummy.questions.all()])
 
-        questions = dummy.questions.all()
+        questions = self.dummy.questions.all()
         nt.eq_(questions.count(), 2)
 
 
-class DemoCompQuestion(TestCase):
+class DemoCompQuestion(BaseTest):
 
     def test_road_week8(self):
         ''' Test the db structure by using some sample data'''
@@ -53,15 +53,13 @@ class DemoCompQuestion(TestCase):
             'All of the above!'
         ]
 
-        dummy = DummyModel.objects.create(name="dumber")
-
         choices = [Choice.objects.create(order=i, label=label)\
                     for i, label in enumerate(choice_label_text)]
 
         choice_question = ChoiceQuestion.objects.create(multichoice=True,
             text="Why do we love safcol tuna?")
 
-        dummy.questions.add(choice_question)
+        self.dummy.questions.add(choice_question)
 
         choice_question.choices = choices
         choice = choice_question.choices.filter(label__icontains='protein')
@@ -71,20 +69,13 @@ class DemoCompQuestion(TestCase):
         text_question = TextQuestion.objects.create(order=1,
             text='How much wood can a woodchuck chuck?')
 
-        dummy.questions.add(text_question)
+        self.dummy.questions.add(text_question)
 
         # we created two questions so we should get 2 back
-        nt.eq_(dummy.questions.all().count(), 2)
+        nt.eq_(self.dummy.questions.all().count(), 2)
 
 
-class TestAnswerModels(TestCase):
-
-    def setUp(self):
-        # create a dummy member
-        self.member = DummyMember.objects.create(name="Tester")
-
-        self.member2 = DummyMember.objects.create(name='Another member')
-        self.ctype = ContentType.objects.get_for_model(self.member)
+class TestAnswerModels(BaseTest):
 
     def test_text_answer(self):
         '''

@@ -8,23 +8,16 @@ from django.test.client import RequestFactory
 from nose import tools as nt
 
 from domande.forms import QuestionForm, TextQuestionForm, ChoiceQuestionForm
-from domande.models import TextQuestion
+from domande.models import TextQuestion, ChoiceQuestion, Choice
 
+from .utils import BaseTest
 from .models import DummyMember
 
 
 request_factory = RequestFactory()
 
 
-class TestForms(TestCase):
-
-    def setUp(self):
-        # create a dummy member
-        self.member = DummyMember.objects.create(name="Tester")
-
-        self.text_question = TextQuestion.objects.create(order=1,
-            text='How much wood can a woodchuck chuck?')
-
+class TestForms(BaseTest):
 
     def test_no_question(self):
         '''Test that form raises ValueError when without a quesion
@@ -36,7 +29,11 @@ class TestForms(TestCase):
 
 
     def test_question_form(self):
-        form =  TextQuestionForm(question=self.text_question)
+        text_question = TextQuestion.objects.create(
+            text='What is a text question?'
+        )
+
+        form =  TextQuestionForm(question=text_question)
 
         template = get_template_from_string(u"""
                 {% load crispy_forms_tags %}
@@ -47,14 +44,37 @@ class TestForms(TestCase):
 
         c = Context({'form': form})
         html = template.render(c)
-        nt.eq_('order' not in html, True)
-        nt.eq_('question' in html, True)
+        nt.assert_true('order' not in html)
+        nt.assert_true('question' in html)
 
 
-def test_answer():
-    request = request_factory.post(
-        path = '/',
-        data = {
-         'answer': 'testing'
-        }
-    )
+    def test_choice_question_form(self):
+        choice_question = ChoiceQuestion.objects.create(
+            text="What is the meaning of life?"
+        )
+
+        choice_question.choices = [
+            Choice.objects.create(label='42 what was the question?'),
+            Choice.objects.create(label='43'),
+        ]
+
+        form =  ChoiceQuestionForm(question=choice_question)
+
+        template = get_template_from_string(u"""
+                {% load crispy_forms_tags %}
+                {{ form|crispy}}
+        """)
+        form.is_valid()
+        c = Context({'form': form})
+        html = template.render(c)
+
+        nt.assert_true('42 what was the question' in html)
+
+
+    def test_answer(self):
+        request = request_factory.post(
+            path = '/',
+            data = {
+             'answer': 'testing'
+            }
+        )
