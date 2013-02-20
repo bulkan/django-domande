@@ -7,7 +7,7 @@ from django.test.client import RequestFactory
 
 from nose import tools as nt
 
-from domande.forms import TextQuestionForm
+from domande.forms import QuestionForm, TextQuestionForm, ChoiceQuestionForm
 
 
 request_factory = RequestFactory()
