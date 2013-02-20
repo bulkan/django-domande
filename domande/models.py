@@ -9,6 +9,7 @@ from polymorphic import PolymorphicModel
 from django_extensions.db.models import TimeStampedModel
 
 
+
 class Question(PolymorphicModel, TimeStampedModel):
     ''' represents a question '''
 
@@ -27,9 +28,14 @@ class Question(PolymorphicModel, TimeStampedModel):
     def __unicode__(self):
         return self.text
 
+    #def get_form(self):
+        #import pdb; pdb.set_trace() ### XXX BREAKPOINT
+
 
 class TextQuestion(Question):
-    pass
+    def get_form(self):
+        from forms import TextQuestionForm
+        return TextQuestionForm
 
 
 class Choice(TimeStampedModel):
@@ -51,6 +57,10 @@ class ChoiceQuestion(Question):
             help_text="Select one or more")
 
     choices = models.ManyToManyField(Choice)
+
+    def get_form(self):
+        from forms import ChoiceQuestionForm
+        return ChoiceQuestionForm
 
 
 class Answer(PolymorphicModel, TimeStampedModel):
