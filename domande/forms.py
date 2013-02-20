@@ -2,7 +2,7 @@ from django.forms import Form
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.bootstrap import InlineRadios
+from crispy_forms.bootstrap import InlineRadios, InlineCheckboxes
 from crispy_forms.layout import Layout
 
 from models import TextQuestion
@@ -46,18 +46,27 @@ class ChoiceQuestionForm(QuestionForm):
     def __init__(self, *args, **kwargs):
         super(ChoiceQuestionForm, self).__init__(*args, **kwargs)
 
-        choices  = [(c.label, c.id) for c in self.question.choices.all()]
+        choices = [(c.id, c.label) for c in self.question.choices.all()]
 
-        field = forms.ChoiceField(
+        widget = forms.RadioSelect
+        field_type = forms.ChoiceField
+        inline_type = InlineRadios
+
+        if self.question.multichoice:
+            field_type = forms.MultipleChoiceField
+            widget = forms.CheckboxSelectMultiple
+            inline_type = InlineCheckboxes
+
+        field = field_type(
             label=self.question.text,
             required=not self.question.optional,
             choices=choices,
-            widget=forms.RadioSelect()
+            widget=widget
         )
 
         self.fields['question'] = field
 
         # Render radio buttons inline
         self.helper.layout = Layout(
-            InlineRadios('question')
+            inline_type('question')
         )

@@ -37,7 +37,7 @@ class TestForms(BaseTest):
 
         template = get_template_from_string(u"""
                 {% load crispy_forms_tags %}
-                {{ form|crispy}}
+                {% crispy form %}
         """)
 
         form.is_valid()
@@ -62,13 +62,40 @@ class TestForms(BaseTest):
 
         template = get_template_from_string(u"""
                 {% load crispy_forms_tags %}
-                {{ form|crispy}}
+                {% crispy form %}
         """)
         form.is_valid()
         c = Context({'form': form})
         html = template.render(c)
 
         nt.assert_true('42 what was the question' in html)
+
+
+    def test_choice_multichoice_question_form(self):
+        choice_question = ChoiceQuestion.objects.create(
+            text="Multichoice question",
+            multichoice=True
+        )
+
+        choice_question.choices = [
+            Choice.objects.create(label='42 what was the question?'),
+            Choice.objects.create(label='43'),
+        ]
+
+        form = ChoiceQuestionForm(question=choice_question)
+
+        template = get_template_from_string(u"""
+                {% load crispy_forms_tags %}
+                {% crispy form %}
+        """)
+        form.is_valid()
+        c = Context({'form': form})
+        html = template.render(c)
+
+        nt.assert_true('42 what was the question' in html)
+
+        # test that inline checkboxes are rendering instead of radio buttons
+        nt.assert_true('checkbox inline' in html)
 
 
     def test_answer(self):

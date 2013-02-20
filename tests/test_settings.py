@@ -33,3 +33,5 @@ NOSE_ARGS = ['--with-fixture-bundling',
 ]
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+ROOT_URLCONF = 'tests.urls'
