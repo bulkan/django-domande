@@ -16,6 +16,7 @@ class QuestionForm(Form):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
 
+        # TODO: get this from kwargs in the future
         #self.helper.form_class = 'form-horizontal'
 
         self.question = kwargs.get('question')
@@ -37,8 +38,8 @@ class TextQuestionForm(QuestionForm):
         self.fields['question'] = forms.CharField(
             label=self.question.text,
             widget=forms.TextInput(),
+            required=not self.question.optional,
         )
-
 
 
 class ChoiceQuestionForm(QuestionForm):
