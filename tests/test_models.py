@@ -8,7 +8,7 @@ from django.test import TestCase
 from nose import tools as nt
 
 from domande.models import TextQuestion, ChoiceQuestion, Choice
-from domande.models import TextAnswer
+from domande.models import TextAnswer, ChoiceAnswer
 from domande.models import Question
 
 from models import DummyModel, DummyMember
@@ -82,6 +82,8 @@ class TestAnswerModels(TestCase):
     def setUp(self):
         # create a dummy member
         self.member = DummyMember.objects.create(name="Tester")
+
+        self.member2 = DummyMember.objects.create(name='Another member')
         self.ctype = ContentType.objects.get_for_model(self.member)
 
     def test_text_answer(self):
@@ -114,10 +116,26 @@ class TestAnswerModels(TestCase):
         Test Choice answers
         '''
 
-        choices = [Choice.objects.create(label=t) for t in ('42', '43')]
+        choices = [Choice.objects.create(label=t) for t in ('42', '43', '45')]
 
         choice_question = ChoiceQuestion.objects.create(
             text='What is the meaning of life?'
         )
 
         choice_question.choices = choices
+
+        choice_answer = ChoiceAnswer.objects.create(
+            question=choice_question,
+            content_object=self.member,
+        )
+
+        choice_answer.answer = choices[:2]
+
+        # Test that we can get the answer object
+        nt.eq_(self.member.answers.count(), 1)
+
+        # Test that we can find same Choices that was 'selected'
+        nt.eq_(set(choices[:2]), set(self.member.answers.all()[0].answer.all()))
+
+        # The second member shouldnt have any answers
+        nt.eq_(self.member2.answers.count(), 0)
