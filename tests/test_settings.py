@@ -24,12 +24,10 @@ INSTALLED_APPS = [
 
 SOUTH_TESTS_MIGRATE = False
 
-NOSE_ARGS = ['--with-fixture-bundling',
-             '-s',
+NOSE_ARGS = ['-s',
              '--with-cover',
-             '--with-xunit',
+             #'--with-xunit',
              '--cover-package=domande',
-             '--with-fixture-bundling',
              '--cover-html',
 ]
 
