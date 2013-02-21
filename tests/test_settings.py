@@ -29,7 +29,8 @@ NOSE_ARGS = ['--with-fixture-bundling',
              '--with-cover',
              '--with-xunit',
              '--cover-package=domande',
-             '--with-fixture-bundling'
+             '--with-fixture-bundling',
+             '--cover-html',
 ]
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

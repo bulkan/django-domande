@@ -130,3 +130,8 @@ class TestAnswerModels(BaseTest):
 
         # The second member shouldnt have any answers
         nt.eq_(self.member2.answers.count(), 0)
+
+
+def test_question_unicode():
+    q = Question.objects.create(text='lol')
+    nt.eq_(unicode(q), 'lol')

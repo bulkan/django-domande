@@ -1,5 +1,6 @@
 from django import forms
 
+from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 
 from crispy_forms.helper import FormHelper
@@ -68,6 +69,9 @@ class TextQuestionForm(QuestionForm):
         )
 
     def save(self):
+        if not self.is_valid():
+            raise forms.ValidationError('form is not valid')
+
         answer = self.cleaned_data.get('answer')
 
         if not answer:
@@ -87,13 +91,27 @@ class TextQuestionForm(QuestionForm):
             text_answer.save()
 
 
-
 class ChoiceQuestionForm(QuestionForm):
     def __init__(self, *args, **kwargs):
         super(ChoiceQuestionForm, self).__init__(*args, **kwargs)
 
         choices = [(c.id, c.label) for c in self.question.choices.all()]
 
+        # initial values
+
+        initial_choices = []
+        choice_answer = ChoiceAnswer.objects.filter(
+            object_id=self.content_object.id,
+            content_type=self.content_type,
+            question=self.question,
+        ).annotate(a=Count('answer')).filter(a__gt=0)
+
+        # we have ChoiceAnswer instance
+        if choice_answer:
+            choice_answer = choice_answer[0]
+            initial_choices = choice_answer.answer.all().values_list('id', flat=True)
+
+        # default classes
         widget = forms.RadioSelect
         field_type = forms.ChoiceField
         inline_type = InlineRadios
@@ -107,18 +125,22 @@ class ChoiceQuestionForm(QuestionForm):
             label=self.question.text,
             required=not self.question.optional,
             choices=choices,
+            initial=initial_choices,
             widget=widget
         )
 
         self.fields['answer'] = field
 
-        # Render radio buttons inline
+        # Render choice buttons inline
         self.helper.layout = Layout(
             inline_type('answer')
         )
 
 
     def save(self):
+        if not self.is_valid():
+            raise forms.ValidationError('Form is not valid')
+
         real_answer = self.cleaned_data.get('answer')
 
         if not real_answer:
@@ -128,21 +150,26 @@ class ChoiceQuestionForm(QuestionForm):
 
         choices = Choice.objects.filter(id__in=real_answer)
 
-        #choice_answer, created = ChoiceAnswer.objects.get_or_create(
-            #object_id=self.content_object.id,
-            #content_type=self.content_type,
-            #question=self.question,
-            #answer__in=choices
-        #)
+        # find ChoiceAnswer
+        choice_answer = ChoiceAnswer.objects.filter(
+            object_id=self.content_object.id,
+            content_type=self.content_type,
+            question=self.question,
+        ).annotate(a=Count('answer')).filter(a__gt=0)
 
-        #choice_answer  = ChoiceAnswer.objects.filter(
-            #object_id=self.content_object.id,
-            #content_type=self.content_type,
-            #question=self.question,
-        #)
+        # we have ChoiceAnswer instance
+        if choice_answer:
+            choice_answer = choice_answer[0]
 
+        if not choice_answer:
+            # create a ChoiceAnswer
+            choice_answer  = ChoiceAnswer.objects.create(
+                object_id=self.content_object.id,
+                content_type=self.content_type,
+                question=self.question
+            )
 
-        #if created:
-            #choice_answer.content_object = self.content_object
-            #choice_answer.answer = choices
-            #choice_answer.save()
+        # re save out the choices
+        choice_answer.content_object = self.content_object
+        choice_answer.answer = choices
+        choice_answer.save()
