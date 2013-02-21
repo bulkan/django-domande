@@ -54,10 +54,21 @@ class TextQuestionForm(QuestionForm):
     def __init__(self, *args, **kwargs):
         super(TextQuestionForm, self).__init__(*args, **kwargs)
 
+        # work out initial data
+
+        initial_answer = TextAnswer.objects.filter(
+            object_id=self.content_object.id,
+            content_type=self.content_type,
+            question=self.question
+        )
+
+        initial_answer = initial_answer[0].answer if initial_answer.exists() else ''
+
         self.fields['answer'] = forms.CharField(
             label=self.question.text,
             widget=forms.TextInput(),
             required=not self.question.optional,
+            initial=initial_answer,
         )
 
     def save(self):
