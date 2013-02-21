@@ -31,6 +31,8 @@ class QuestionForm(Form):
         if not self.content_object:
             raise ValueError('Need a content_object to save answers too')
 
+        self.content_type = ContentType.objects.get_for_model(self.content_object)
+
         del kwargs['content_object']
 
         # TODO: get this from kwargs in the future
@@ -67,14 +69,16 @@ class TextQuestionForm(QuestionForm):
             return
 
         text_answer, created = TextAnswer.objects.get_or_create(
-            content_object=content_object,
+            object_id=self.content_object.id,
+            content_type=self.content_type,
             question=self.question,
             answer=answer
         )
 
-        import pdb; pdb.set_trace() ### XXX BREAKPOINT
+        if created:
+            text_answer.content_object = self.content_object
+            text_answer.save()
 
-        print self
 
 
 class ChoiceQuestionForm(QuestionForm):
