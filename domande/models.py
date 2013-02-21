@@ -72,9 +72,6 @@ class Answer(PolymorphicModel, TimeStampedModel):
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
-    #def __unicode__(self):
-        #return "Q: %s - A: " % (self.question)
-
 
 class TextAnswer(Answer):
     answer = models.TextField(blank=False,
@@ -89,4 +86,4 @@ class ChoiceAnswer(Answer):
         help_text='The selected choices as the answer')
 
     def __unicode__(self):
-        return '%r' % self.answer.all()
+        return '%s - %r' % (self.question, self.answer.all())

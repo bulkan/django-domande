@@ -1,4 +1,3 @@
-from django.forms import Form
 from django import forms
 
 from django.contrib.contenttypes.models import ContentType
@@ -9,11 +8,10 @@ from crispy_forms.layout import Layout
 from crispy_forms.layout import Submit
 
 
-
 from models import TextAnswer, ChoiceAnswer, Choice
 
 
-class QuestionForm(Form):
+class QuestionForm(forms.Form):
     ''' Base class for a Question
     '''
 
@@ -35,8 +33,7 @@ class QuestionForm(Form):
 
         del kwargs['content_object']
 
-        # TODO: get this from kwargs in the future
-        #self.helper.form_class = 'form-horizontal'
+        self.helper.form_class = kwargs.get('form_class', '')
 
         self.question = kwargs.get('question')
 
@@ -46,8 +43,7 @@ class QuestionForm(Form):
         del kwargs['question']
         super(QuestionForm, self).__init__(*args, **kwargs)
 
-        # TODO: check for answers for content_object and use as
-        # initial data
+
 
 
 class TextQuestionForm(QuestionForm):
@@ -114,9 +110,39 @@ class ChoiceQuestionForm(QuestionForm):
             widget=widget
         )
 
-        self.fields['question'] = field
+        self.fields['answer'] = field
 
         # Render radio buttons inline
         self.helper.layout = Layout(
-            inline_type('question')
+            inline_type('answer')
         )
+
+
+    def save(self):
+        real_answer = self.cleaned_data.get('answer')
+
+        if not real_answer:
+            if self.fields['answer'].required:
+                raise forms.ValidationError, 'Required'
+            return
+
+        choices = Choice.objects.filter(id__in=real_answer)
+
+        #choice_answer, created = ChoiceAnswer.objects.get_or_create(
+            #object_id=self.content_object.id,
+            #content_type=self.content_type,
+            #question=self.question,
+            #answer__in=choices
+        #)
+
+        #choice_answer  = ChoiceAnswer.objects.filter(
+            #object_id=self.content_object.id,
+            #content_type=self.content_type,
+            #question=self.question,
+        #)
+
+
+        #if created:
+            #choice_answer.content_object = self.content_object
+            #choice_answer.answer = choices
+            #choice_answer.save()
