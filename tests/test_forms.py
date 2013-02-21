@@ -33,7 +33,10 @@ class TestForms(BaseTest):
             text='What is a text question?'
         )
 
-        form =  TextQuestionForm(question=text_question)
+        form =  TextQuestionForm(
+            question=text_question,
+            content_object=self.member
+        )
 
         template = get_template_from_string(u"""
                 {% load crispy_forms_tags %}
@@ -58,7 +61,10 @@ class TestForms(BaseTest):
             Choice.objects.create(label='43'),
         ]
 
-        form =  ChoiceQuestionForm(question=choice_question)
+        form =  ChoiceQuestionForm(
+            question=choice_question,
+            content_object=self.member,
+        )
 
         template = get_template_from_string(u"""
                 {% load crispy_forms_tags %}
@@ -82,7 +88,10 @@ class TestForms(BaseTest):
             Choice.objects.create(label='43'),
         ]
 
-        form = ChoiceQuestionForm(question=choice_question)
+        form = ChoiceQuestionForm(
+            question=choice_question,
+            content_object=self.member,
+        )
 
         template = get_template_from_string(u"""
                 {% load crispy_forms_tags %}
