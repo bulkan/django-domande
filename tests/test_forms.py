@@ -24,6 +24,7 @@ class TestForms(BaseTest):
     def test_no_question(self):
         '''Test that form raises ValueError when without a quesion
         being passed '''
+        raise Exception('fail travis')
 
         # This should raise a ValueError because of no question
         nt.assert_raises(ValueError, QuestionForm,
