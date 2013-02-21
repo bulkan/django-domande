@@ -20,3 +20,17 @@ class BaseTest(TestCase):
         self.ctype = ContentType.objects.get_for_model(self.member)
 
         self.dummy = DummyModel.objects.create(name='dumb dumb')
+
+
+    def choice_form(self, question, data={}):
+        return ChoiceQuestionForm(data,
+            question=question,
+            content_object=self.member,
+        )
+
+
+    def text_form(self, question, data={}):
+        return TextQuestionForm(data,
+            question=question,
+            content_object=self.member,
+        )

@@ -127,18 +127,12 @@ class TestForms(BaseTest):
 
         data = {'answer': 'testing'}
 
-        form =  TextQuestionForm({},
-            question=text_question,
-            content_object=self.member
-        )
+        form =  self.text_form(text_question, {})
 
         # question is required by default
         nt.assert_raises(ValidationError, form.save)
 
-        form =  TextQuestionForm(data,
-            question=text_question,
-            content_object=self.member
-        )
+        form = self.text_form(text_question, data)
 
         # we shouldn't have any answers
         nt.eq_(TextAnswer.objects.all().count(), 0)
@@ -150,6 +144,8 @@ class TestForms(BaseTest):
         form.save()
         nt.eq_(TextAnswer.objects.all().count(), 1)
         nt.eq_(TextAnswer.objects.all()[0].answer, data['answer'])
+
+        self.text_form(text_question, data).save()
 
 
     def test_choiceanswerform_save(self):
@@ -165,19 +161,12 @@ class TestForms(BaseTest):
 
         data = {'answer': [1]}
 
-        form = ChoiceQuestionForm({},
-            question=choice_question,
-            content_object=self.member,
-        )
+        form = self.choice_form(choice_question, {})
 
         # question is required by default
         nt.assert_raises(ValidationError, form.save)
 
-
-        form = ChoiceQuestionForm(data,
-            question=choice_question,
-            content_object=self.member,
-        )
+        form = self.choice_form(choice_question, data)
 
         # form should be  valid now
         nt.eq_(form.is_valid(), True)
@@ -195,4 +184,5 @@ class TestForms(BaseTest):
             .answer.all().values_list('id', flat=True))
         nt.eq_(saved_answer_choices, set(data['answer']))
 
+        form = self.choice_form(choice_question, data)
         form.save()
