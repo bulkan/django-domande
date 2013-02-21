@@ -1,4 +1,5 @@
-![domande](https://raw.github.com/bulkan/django-domande/master/logo.png)(http://aurorachiarello.com)
+![domande](https://raw.github.com/bulkan/django-domande/master/logo.png)
+Logo by [@aurorachiarello](http://github.com/aurorachiarello)
 
 [![Build Status](https://travis-ci.org/bulkan/django-domande.png?branch=master)](https://travis-ci.org/bulkan/django-domande)
 
