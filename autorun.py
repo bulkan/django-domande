@@ -41,7 +41,7 @@ def main():
                 passed.show()
 
     notifier = pyinotify.Notifier(wm, ActionProcesser())
-    wdd = wm.add_watch(os.path.join(os.getcwd(), 'tests'), mask, rec=True)
+    wdd = wm.add_watch(os.path.join(os.getcwd(), 'domande'), mask, rec=True)
 
     notifier.loop()
 
