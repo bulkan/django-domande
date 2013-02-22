@@ -150,12 +150,12 @@ class ChoiceQuestionForm(QuestionForm):
 
         choices = Choice.objects.filter(id__in=real_answer)
 
-        # find ChoiceAnswer
+        # find ChoiceAnswer and filter in answer !
         choice_answer = ChoiceAnswer.objects.filter(
             object_id=self.content_object.id,
             content_type=self.content_type,
             question=self.question,
-        ).annotate(a=Count('answer')).filter(a__gt=0)
+        )
 
         # we have ChoiceAnswer instance
         if choice_answer:
