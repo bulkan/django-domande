@@ -7,6 +7,8 @@ DATABASES = {
 
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
+    'django_extensions',
     'south',
     'domande'
 ]
