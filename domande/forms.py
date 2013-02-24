@@ -11,6 +11,10 @@ from crispy_forms.layout import Submit
 
 from models import TextAnswer, ChoiceAnswer, Choice
 
+# List of validator_name:func_name
+# Show in admin a multichoice list of validator names
+# pass this to form using field_name='validator_name' ?
+
 
 class QuestionForm(forms.Form):
     ''' Base class for a Question
@@ -61,12 +65,15 @@ class TextQuestionForm(QuestionForm):
 
         initial_answer = initial_answer[0].answer if initial_answer.exists() else ''
 
+
         self.fields['answer'] = forms.CharField(
             label=self.question.text,
             widget=forms.TextInput(),
             required=not self.question.optional,
             initial=initial_answer,
         )
+        answer = self.fields['answer']
+        print self.fields
 
     def save(self):
         if not self.is_valid():
