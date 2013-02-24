@@ -2,11 +2,14 @@
 
 import sys
 import os
+import sched, time
 
 from subprocess import call
 
 import pyinotify
 import pynotify
+
+
 
 
 
@@ -25,6 +28,20 @@ def main():
 
     command = sys.argv[1]
 
+    running_tests = False
+
+    s = sched.scheduler(time.time, time.sleep)
+    def tester(running_tests):
+        if running_tests:
+            return
+        running_tests = True
+        if call(command, shell=True):
+            failed.show()
+        else:
+            passed.show()
+        running_tests = False
+
+
     wm = pyinotify.WatchManager()
     mask = pyinotify.IN_MODIFY
 
@@ -34,11 +51,9 @@ def main():
         def process_IN_MODIFY(self, event, ext='py'):
             if all(not event.pathname.endswith(ext) for ext in extensions):
                 return
-            #print event
-            if call(command, shell=True):
-                failed.show()
-            else:
-                passed.show()
+            if s.empty():
+                s.enter(15, 1, tester, (running_tests,))
+                s.run()
 
     notifier = pyinotify.Notifier(wm, ActionProcesser())
     wdd = wm.add_watch(os.path.join(os.getcwd(), 'domande'), mask, rec=True)
