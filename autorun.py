@@ -45,17 +45,19 @@ def main():
     wm = pyinotify.WatchManager()
     mask = pyinotify.IN_MODIFY
 
-    extensions = ['py']
+    extensions = ['py', 'domande']
 
     class ActionProcesser(pyinotify.ProcessEvent):
         def process_IN_MODIFY(self, event, ext='py'):
             if all(not event.pathname.endswith(ext) for ext in extensions):
                 return
+            print event.pathname
             if s.empty():
                 s.enter(15, 1, tester, (running_tests,))
                 s.run()
 
     notifier = pyinotify.Notifier(wm, ActionProcesser())
+    print os.path.join(os.getcwd(), 'domande')
     wdd = wm.add_watch(os.path.join(os.getcwd(), 'domande'), mask, rec=True)
 
     notifier.loop()
