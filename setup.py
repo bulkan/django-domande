@@ -13,7 +13,7 @@ setup(
     author_email='bulkan@gmail.com',
     url='https://github.com/bulkan/django-domande',
     install_requires=[
-        'django_polymporphic'
+        'django_polymorphic'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
