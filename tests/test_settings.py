@@ -34,3 +34,5 @@ NOSE_ARGS = ['-s',
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 ROOT_URLCONF = 'tests.urls'
+
+SECRET_KEY = 'not so secret key'
