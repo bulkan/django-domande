@@ -33,15 +33,17 @@ To get development version
 
 In your ```settings.py``` file change ```INSTALLED_APPS``` and add;
 
-   INSTALLED_APPS = [
-    ...
-    'crispy-forms'   # need to add this for it's template tags to load
-    'domande'
-    ...
-   ]
+```python
+INSTALLED_APPS = [
+   ...
+   'crispy-forms'   # need to add this for it's template tags to load
+   'domande'
+   ...
+]
+```
 
 
-Note I'm assuming you have South already installed if not add ```south``` to ```INSTALLED_APPS```
+__Note__ I'm assuming you have South already installed if not add ```south``` to ```INSTALLED_APPS```
 
 
 Usage
@@ -50,15 +52,17 @@ Usage
 Create a model with a ManyToManyField to domande.models.Question. For example a Questionnaire;
 
 
-    from django.db import models
-    from django.contrib.contenttypes import generic
+```python
+from django.db import models
+from django.contrib.contenttypes import generic
 
-    from domande.models import Question, Answer
+from domande.models import Question, Answer
 
-    class Questionnaire(models.Model):
-        name = models.CharField(max_length=256)
+class Questionnaire(models.Model):
+    name = models.CharField(max_length=256)
 
-        questions = models.ManyToManyField(Question)
+    questions = models.ManyToManyField(Question)
+```
 
 
 domande at the moment supports two question types where the answer differs. A text answer and 
@@ -70,6 +74,7 @@ child model instance to create.
 Now you need to render the list of Questions in a view;
 
 
+```python
 def questionnaire_view(request):
 
     # for sake of example use .get
@@ -82,6 +87,7 @@ def questionnaire_view(request):
                ]
 
     # form is a list of TextQuestionForm or ChoiceQuestionForm
+```
 
 
 domande's forms accept a ```content_object``` that it uses when it saves an answer.
@@ -92,38 +98,41 @@ django's builtin ContentType framework to solve this. In the above example it us
 
 in the template render the forms like so;
 
-    {% load crispy_forms_tags %}
+```html
+{% load crispy_forms_tags %}
 
-    <form method="post">
-        {% for form in forms %}
-            {% crispy form %}
-        {% endfor %}
-    </form>
+<form method="post">
+    {% for form in forms %}
+        {% crispy form %}
+    {% endfor %}
+</form>
+```
 
 
 to process the validity of the forms and save the answers;
 
-    forms = [q.get_form()(request.POST or None,
-                prefix=str(q.id),
-                content_object=request.user,
-                question=q, form_tag=False)
-                    for q in survey.questions.all().get_real_instances()
-            ]
+```python
+forms = [q.get_form()(request.POST or None,
+            prefix=str(q.id),
+            content_object=request.user,
+            question=q, form_tag=False)
+                for q in survey.questions.all().get_real_instances()
+        ]
 
-    forms_are_valid = True if forms else False
+forms_are_valid = True if forms else False
 
-    # is there a more pythonic way of doing this ?
-    for form in forms:
-        if form.is_valid():
-            form.save()
-        else:
-            forms_are_valid = False
-
+# is there a more pythonic way of doing this ?
+for form in forms:
+    if form.is_valid():
+        form.save()
+    else:
+        forms_are_valid = False
+```
 
 Development
 -----------
 
-Create a virtualenv and clone this repo. Then install the requirements
+Fork this repo, create a virtualenv and clone your fork. Then install the requirements
 
     pip install -r requirements.txt
 
@@ -131,7 +140,7 @@ If you have changed the models then create a migration;
 
     django-admin.py schemamigration --settings=domande.settings --pythonpath=$PWD
 
-Please make sure existing tests pass. Add more tests as you see fit.
+Please make sure existing tests pass and feel free to add more tests as you see fit.
 
     django-admin.py test --settings='tests.test_settings' --pythonpath=$PWD
 
