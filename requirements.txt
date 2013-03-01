@@ -6,4 +6,5 @@ South
 django-extensions
 django-nose
 django-crispy-forms
-django-polymorphic
+#django-polymorphic
+git://github.com/chrisglass/django_polymorphic.git
