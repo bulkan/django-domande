@@ -6,7 +6,10 @@ description = '''django app to ask questions'''
 
 setup(
     name='django-domande',
-    packages=['domande'],
+    packages=[
+        'domande',
+        'domande.migrations'
+    ],
     version=__version__,
     description=description,
     author='Bulkan Evcimen',
