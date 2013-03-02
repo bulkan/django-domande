@@ -1,10 +1,8 @@
 django
 nose
 coverage
-yolk
 South
 django-extensions
 django-nose
 django-crispy-forms
-Sphinx
 git+git://github.com/chrisglass/django_polymorphic.git
