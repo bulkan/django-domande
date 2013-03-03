@@ -12,3 +12,6 @@ INSTALLED_APPS = [
     'south',
     'domande'
 ]
+
+
+SECRET_KEY = 'lol im secret'
