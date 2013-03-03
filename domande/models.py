@@ -11,7 +11,9 @@ from django_extensions.db.models import TimeStampedModel
 
 
 class Question(PolymorphicModel, TimeStampedModel):
-    ''' represents a question '''
+    '''
+        Represents a question.
+    '''
 
     class Meta:
         ordering = ['order']
@@ -28,18 +30,24 @@ class Question(PolymorphicModel, TimeStampedModel):
     def __unicode__(self):
         return self.text
 
-    #def get_form(self):
-        #import pdb; pdb.set_trace() ### XXX BREAKPOINT
-
 
 class TextQuestion(Question):
+    '''
+    Question with a text answer
+    '''
+
     def get_form(self):
+        '''
+        Returns the form for this model
+        '''
         from forms import TextQuestionForm
         return TextQuestionForm
 
 
 class Choice(TimeStampedModel):
-    ''' Model to store the choices for multi answer questions'''
+    '''
+    Model to store the choices for multi choice questions
+    '''
 
     order = models.PositiveIntegerField(default=1)
 
@@ -53,12 +61,21 @@ class Choice(TimeStampedModel):
 
 
 class ChoiceQuestion(Question):
+    '''
+    Question with answers that are chosen from a list of choices defined
+    by the user.
+    '''
+
     multichoice = models.BooleanField(default=False,
             help_text="Select one or more")
 
     choices = models.ManyToManyField(Choice)
 
     def get_form(self):
+        '''
+        Returns the form for this model
+        '''
+
         from forms import ChoiceQuestionForm
         return ChoiceQuestionForm
 
