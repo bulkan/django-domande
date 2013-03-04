@@ -59,12 +59,10 @@ class TextQuestionForm(QuestionForm):
 
         initial_answer = TextAnswer.objects.filter(
             object_id=self.content_object.id,
-            content_type=self.content_type,
             question=self.question
         )
 
         initial_answer = initial_answer[0].answer if initial_answer.exists() else ''
-
 
         self.fields['answer'] = forms.CharField(
             label=self.question.text,
@@ -73,7 +71,6 @@ class TextQuestionForm(QuestionForm):
             initial=initial_answer,
         )
         answer = self.fields['answer']
-        print self.fields
 
     def save(self):
         if not self.is_valid():
@@ -109,7 +106,6 @@ class ChoiceQuestionForm(QuestionForm):
         initial_choices = []
         choice_answer = ChoiceAnswer.objects.filter(
             object_id=self.content_object.id,
-            content_type=self.content_type,
             question=self.question,
         ).annotate(a=Count('answer')).filter(a__gt=0)
 
@@ -117,6 +113,9 @@ class ChoiceQuestionForm(QuestionForm):
         if choice_answer:
             choice_answer = choice_answer[0]
             initial_choices = choice_answer.answer.all().values_list('id', flat=True)
+            if self.question.multichoice is False:
+                initial_choices = initial_choices=[0]
+
 
         # default classes
         widget = forms.RadioSelect
