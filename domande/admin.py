@@ -7,28 +7,30 @@ from models import Answer, TextAnswer, ChoiceAnswer
 
 
 class QuestionChildAdmin(PolymorphicChildModelAdmin):
-    """ Base admin class for all child models """
-    base_model = Question
+    """
+    Base admin class for all child models of Question
+    """
 
-    # By using these `base_...` attributes instead of the regular ModelAdmin `form` and `fieldsets`,
-    # the additional fields of the child models are automatically added to the admin form.
-    #base_form = ...
-    #base_fieldsets = (
-        #...
-    #)
+    base_model = Question
 
 
 class TextQuestionAdmin(QuestionChildAdmin):
-    base_model = TextQuestion
+    """
+    ModelAdmin for a TextQuestion
+    """
 
 
 class ChoiceQuestionAdmin(QuestionChildAdmin):
-    """ Base admin class for all child models """
-    #base_model = ChoiceQuestion
+    """
+    ModelAdmin for a ChoiceQuestion
+    """
 
 
 class QuestionParentAdmin(PolymorphicParentModelAdmin):
-    """ The parent model admin """
+    """
+    Question parent model admin
+    """
+
     base_model = Question
     child_models = (
         (TextQuestion, TextQuestionAdmin),
@@ -36,10 +38,45 @@ class QuestionParentAdmin(PolymorphicParentModelAdmin):
     )
 
 
-
 admin.site.register(Question, QuestionParentAdmin)
-#admin.site.register(TextQuestion)
-admin.site.register(TextAnswer)
-#admin.site.register(ChoiceQuestion)
-admin.site.register(ChoiceAnswer)
 admin.site.register(Choice)
+
+
+class AnswerChildAdmin(PolymorphicChildModelAdmin):
+    """
+    Base admin class for all child Answer models
+    """
+
+    base_model = Answer
+
+
+class TextAnswerAdmin(AnswerChildAdmin):
+    """
+    ModelAdmin for TextAnswer
+    """
+
+
+class ChoiceAnswerAdmin(AnswerChildAdmin):
+    """
+    ModelAdmin for ChoiceAnswer
+    """
+
+
+class AnswerParentAdmin(PolymorphicParentModelAdmin):
+    """
+    The parent model admin for answer
+    """
+
+    list_display = (
+        'object_id',
+        'content_object',
+        'question',
+    )
+
+    base_model = Answer
+    child_models = (
+        (TextAnswer, TextAnswerAdmin),
+        (ChoiceAnswer, ChoiceAnswerAdmin),
+    )
+
+admin.site.register(Answer, AnswerParentAdmin)
