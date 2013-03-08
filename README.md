@@ -65,10 +65,11 @@ class Questionnaire(models.Model):
 ```
 
 
-domande at the moment supports two question types where the answer differs. A text answer and 
-a multichoice question.  As domande uses django_polymorphic. Once you add a ManyToManyField to Question,
-the admin interface will display the parent model with an additional step of choosing the which 
-child model instance to create.
+domande at the moment supports two question types. A TextQuestion in which the user answers is by entering text and a
+a ChoiceQuestion, the answer being chosen by a set of choices.
+
+Once you add a ManyToManyField to Question which is the base class that the two question types inherit from, the django 
+admin interface will display the parent model with an additional step of choosing the which child model instance to create.
 
 
 Now you need to render the list of Questions in a view;
@@ -90,9 +91,9 @@ def questionnaire_view(request):
 ```
 
 
-domande's forms accept a ```content_object``` that it uses when it saves an answer.
+domande's forms accept a ```content_object``` that it used when it saves an Answer.
 As it doesn't know in advance what sort of "user" or "entry" model you have it uses
-django's builtin ContentType framework to solve this. In the above example it uses
+django's builtin ```ContentType``` framework to solve this. In the above example it uses
 ```request.user``` which is django's auth user
 
 
@@ -108,7 +109,6 @@ in the template render the forms like so;
 </form>
 ```
 
-
 to process the validity of the forms and save the answers;
 
 ```python
@@ -119,14 +119,15 @@ forms = [q.get_form()(request.POST or None,
                 for q in survey.questions.all().get_real_instances()
         ]
 
-forms_are_valid = True if forms else False
+forms_are_valid = []
 
-# is there a more pythonic way of doing this ?
 for form in forms:
-    if form.is_valid():
-        form.save()
-    else:
-        forms_are_valid = False
+    forms_are_valid.append(valid)
+    valid = form.is_valid()
+    if valid:
+        t = form.save()
+
+forms_are_valid = all(forms_are_valid)
 ```
 
 Development
