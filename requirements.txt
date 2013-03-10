@@ -8,3 +8,4 @@ django-nose
 django-crispy-forms
 Sphinx
 git+git://github.com/chrisglass/django_polymorphic.git
+git+git://github.com/bulkan/la-prova.git
