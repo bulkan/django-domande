@@ -1,6 +1,6 @@
 from setuptools import setup
 
-__version__ = 'dev'
+__version__ = '0.1'
 
 description = '''django app to represent generic questions on forms'''
 
