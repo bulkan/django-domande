@@ -5,7 +5,7 @@ Logo by [@aurorachiarello](http://github.com/aurorachiarello)
 [![Build Status](https://travis-ci.org/bulkan/django-domande.png?branch=master)](https://travis-ci.org/bulkan/django-domande)
 
 
-A plugable django app to represent a questions.
+A plugable Django app to represent a generic questions on forms.
 
 
 Dependencies

@@ -2,7 +2,7 @@ from setuptools import setup
 
 __version__ = 'dev'
 
-description = '''django app to ask questions'''
+description = '''django app to represent generic questions on forms'''
 
 setup(
     name='django-domande',
@@ -17,6 +17,7 @@ setup(
     url='https://github.com/bulkan/django-domande',
     install_requires=[
         'django_polymorphic'
+        'south',
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
