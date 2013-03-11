@@ -37,6 +37,7 @@ In your ```settings.py``` file change ```INSTALLED_APPS``` and add;
 INSTALLED_APPS = [
    ...
    'crispy-forms'   # need to add this for it's template tags to load
+   'polymorphic',   # provides admin templates
    'domande'
    ...
 ]
