@@ -43,12 +43,23 @@ INSTALLED_APPS = [
 ]
 ```
 
-
 __Note__ I'm assuming you have South already installed if not add ```south``` to ```INSTALLED_APPS```
 
+General
+-------
 
-Usage
-=====
+```domande``` uses model inheritence to simplify relationships to a list of questions and it does this with
+the help of ```django-polymorphic```. At the moment ```domande``` supports two types of questions that are
+rendered differently by their accompanying forms.
+
+A TextQuestion were the __answer__ is a text and a ChoiceQuestion were the __answer__ is chosen 
+by a set of Choices. TextQuestion and ChoiceQuestion are subclasses of Question.
+
+Example Usage
+=============
+
+Models
+-----
 
 Create a model with a ManyToManyField to domande.models.Question. For example a Questionnaire;
 
@@ -66,12 +77,14 @@ class Questionnaire(models.Model):
 ```
 
 
-domande at the moment supports two question types. A TextQuestion in which the user answers is by entering text and a
-a ChoiceQuestion, the answer being chosen by a set of choices.
+Once you add a ManyToManyField to ```domande.models.Question``` and register your model with the django admin
+interface the questions field will be handled uniquely. As ```domande.models.Questions``` is the parent model
+when you create a new one the admin inteface will display an additional step of choosing the child model to create an
+instance of.
 
-Once you add a ManyToManyField to Question which is the base class that the two question types inherit from, the django 
-admin interface will display the parent model with an additional step of choosing the which child model instance to create.
 
+View
+----
 
 Now you need to render the list of Questions in a view;
 
@@ -91,12 +104,15 @@ def questionnaire_view(request):
     # form is a list of TextQuestionForm or ChoiceQuestionForm
 ```
 
+domande's forms accept a ```content_object``` that is used when it creates and saves an Answer.
+domande doesn't know in advance what type of _user_ or _entry_ model you have so it uses
+django's builtin ```ContentType``` framework to solve this.
 
-domande's forms accept a ```content_object``` that it used when it saves an Answer.
-As it doesn't know in advance what sort of "user" or "entry" model you have it uses
-django's builtin ```ContentType``` framework to solve this. In the above example it uses
-```request.user``` which is django's auth user
+In the above example it uses ```request.user```.
 
+
+Template
+--------
 
 in the template render the forms like so;
 
@@ -110,40 +126,49 @@ in the template render the forms like so;
 </form>
 ```
 
-to process the validity of the forms and save the answers;
+to process the validity of the forms and save the Answers;
 
 ```python
-forms = [q.get_form()(request.POST or None,
-            prefix=str(q.id),
-            content_object=request.user,
-            question=q, form_tag=False)
-                for q in survey.questions.all().get_real_instances()
-        ]
 
-forms_are_valid = []
+def save_view(request, questionnaire):
+    # for sake of example use .get
+    questionnaire = Questionnaire.objects.get(id=questionnaire)
 
-for form in forms:
-    forms_are_valid.append(valid)
-    valid = form.is_valid()
-    if valid:
-        t = form.save()
+    forms = [q.get_form()(request.POST or None,
+                prefix=str(q.id),
+                content_object=request.user,
+                question=q, form_tag=False)
+                    for q in questionnaire.questions.all().get_real_instances()
+            ]
 
-forms_are_valid = all(forms_are_valid)
+    forms_are_valid = []
+
+    for form in forms:
+        forms_are_valid.append(valid)
+        valid = form.is_valid()
+        if valid:
+            t = form.save()
+
+    forms_are_valid = all(forms_are_valid)
 ```
 
-Development
------------
+Each question model in domande has an Answer model that relates to it. A ChoiceQuestion will use a
+ChoiceAnswer and a TextQuestion will use a ChoiceAnswer.
 
-Fork this repo, create a virtualenv and clone your fork. Then install the requirements
+
+Development
+===========
+
+* Fork this repo, create a virtualenv and clone your fork. Then install the requirements
 
     pip install -r requirements.txt
 
-If you have changed the models then create a migration;
+* If you have changed the models then create a migration;
 
     django-admin.py schemamigration --settings=domande.settings --pythonpath=$PWD
 
-Please make sure existing tests pass and feel free to add more tests as you see fit.
+* Please make sure existing tests pass and feel free to add more tests as you see fit.
 
     django-admin.py test --settings='tests.test_settings' --pythonpath=$PWD
 
-Submit Pull Request
+* Submit Pull Request
