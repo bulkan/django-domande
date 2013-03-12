@@ -1,6 +1,6 @@
 from setuptools import setup
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 
 description = '''django app to represent generic questions on forms'''
 
@@ -16,7 +16,7 @@ setup(
     author_email='bulkan@gmail.com',
     url='https://github.com/bulkan/django-domande',
     install_requires=[
-        'django_polymorphic'
+        'django_polymorphic',
         'south',
     ],
     classifiers=[
