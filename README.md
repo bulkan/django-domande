@@ -13,9 +13,9 @@ Dependencies
 
 Here are the list of dependencies;
 
-* [http://django-crispy-forms.readthedocs.org](django-crispy-forms) - This is used to render form fields with Bootstrap classes
-* [https://github.com/chrisglass/django_polymorphic/](django_polymorphic) - Provides an easy way of doing model inheritence.
-* [http://south.readthedocs.org/en/latest/](South) - For model migration. Please use it :smile:
+* [django-crispy-forms](http://django-crispy-forms.readthedocs.org) - This is used to render form fields with Bootstrap classes
+* [django_polymorphic](https://github.com/chrisglass/django_polymorphic/) - Provides an easy way of doing model inheritence.
+* [South](http://south.readthedocs.org/en/latest/) - For model migration. Please use it :smile:
 
 
 Installation
