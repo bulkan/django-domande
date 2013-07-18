@@ -103,7 +103,7 @@ class ChoiceAnswer(Answer):
         help_text='The selected choices as the answer')
 
     def __unicode__(self):
-        return self.question
+        return unicode(self.question)
 
         # XXX: the following does a weird recursion depth exception o_O ?
         #''.join(self.answer.all().values_list('label', flat=True))
