@@ -1,8 +1,3 @@
-#import os
-
-
-#FOLDER_ROOT = os.path.normpath(os.path.dirname(__file__))
-
 DEBUG = True
 
 DATABASES = {
@@ -36,3 +31,5 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 ROOT_URLCONF = 'tests.urls'
 
 SECRET_KEY = 'not so secret key'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap'
