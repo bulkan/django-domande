@@ -142,6 +142,14 @@ class ChoiceQuestionForm(QuestionForm):
             inline_type('answer')
         )
 
+    def clean_answer(self):
+      real_answer = self.cleaned_data.get('answer')
+
+      # for single choice questions, the selected answer is a single string
+      if type(real_answer) is not list:
+        real_answer = [real_answer]
+      return real_answer
+
 
     def save(self):
         if not self.is_valid():

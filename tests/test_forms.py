@@ -175,6 +175,7 @@ class TestForms(BaseTest):
 
         # saving the form should create a new TextAnswer object
         form.save()
+
         nt.eq_(ChoiceAnswer.objects.all().count(), 1)
         saved_answer_choices = set(ChoiceAnswer.objects.all()[0]\
             .answer.all().values_list('id', flat=True))
@@ -194,5 +195,11 @@ class TestForms(BaseTest):
             for i in range(10)
         ]
 
-        form = self.choice_form(choice_question, {})
 
+        form = self.choice_form(choice_question, {'answer': 1})
+
+        nt.eq_(form.is_valid(), True)
+
+        form.save()
+
+        nt.eq_(ChoiceAnswer.objects.all().count(), 1)
