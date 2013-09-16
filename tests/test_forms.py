@@ -182,3 +182,17 @@ class TestForms(BaseTest):
 
         form = self.choice_form(choice_question, data)
         form.save()
+
+
+    def test_single_choiceanswerform_save(self):
+        choice_question = ChoiceQuestion.objects.create(
+            text="Multichoice question",
+        )
+
+        choice_question.choices = [
+            Choice.objects.create(label='Choice %d' %i) 
+            for i in range(10)
+        ]
+
+        form = self.choice_form(choice_question, {})
+
