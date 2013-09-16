@@ -16,9 +16,6 @@ from .utils import BaseTest
 from .models import DummyMember
 
 
-request_factory = RequestFactory()
-
-
 class TestForms(BaseTest):
 
     def test_no_question(self):
@@ -159,13 +156,12 @@ class TestForms(BaseTest):
             Choice.objects.create(label='43'),
         ]
 
-        data = {'answer': [1]}
-
         form = self.choice_form(choice_question, {})
 
         # question is required by default
         nt.assert_raises(ValidationError, form.save)
 
+        data = {'answer': [1]}
         form = self.choice_form(choice_question, data)
 
         # form should be  valid now
