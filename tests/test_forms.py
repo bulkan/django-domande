@@ -187,7 +187,7 @@ class TestForms(BaseTest):
 
     def test_single_choiceanswerform_save(self):
         choice_question = ChoiceQuestion.objects.create(
-            text="Multichoice question",
+            text="Multichoice question"
         )
 
         choice_question.choices = [
@@ -195,11 +195,18 @@ class TestForms(BaseTest):
             for i in range(10)
         ]
 
-
         form = self.choice_form(choice_question, {'answer': 1})
+        nt.eq_(form.is_valid(), True)
 
+        #  choice id as string should work
+        form = self.choice_form(choice_question, {'answer': '1'})
         nt.eq_(form.is_valid(), True)
 
         form.save()
 
         nt.eq_(ChoiceAnswer.objects.all().count(), 1)
+
+        # check that the saved ChoiceAnswers answer model id matches
+        saved_answer_choices = set(ChoiceAnswer.objects.all()[0]\
+            .answer.all().values_list('id', flat=True))
+        nt.eq_(saved_answer_choices, set([1]))
