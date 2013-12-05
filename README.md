@@ -3,7 +3,7 @@
 Logo by [@aurorachiarello](http://github.com/aurorachiarello)
 
 [![Build Status](https://travis-ci.org/bulkan/django-domande.png?branch=master)](https://travis-ci.org/bulkan/django-domande)
-
+[![PyPi downloads](https://pypip.in/d/django-domande/badge.png)](https://crate.io/packages/django-domande/)
 
 A plugable Django app to represent a generic questions on forms.
 
