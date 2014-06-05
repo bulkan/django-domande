@@ -10,8 +10,8 @@ env:
     - DJANGO_VERSION=1.5
 
 install: 
-  - pip install -q Django==$DJANGO_VERSION --use-mirrors
-  - pip install -r .travis-requirements.txt --use-mirrors
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -r .travis-requirements.txt
 
 script:
     - django-admin.py test --settings='tests.test_settings' --pythonpath=$PWD
